@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 @Component
 public class UserDAOService {
@@ -30,10 +29,14 @@ public class UserDAOService {
         return users;
     }
 
-    public User findOne(int id) {
+    public User findById(int id) {
         Predicate<? super User> predicate = user -> user.getId() == id;
         System.out.println(predicate);
         return users.stream().filter(predicate).findFirst().orElse(null);
+    }
+
+    public void deleteUserById(int id) {
+        users.removeIf(user -> user.getId() == id);
     }
 
     public User save(User user) {
