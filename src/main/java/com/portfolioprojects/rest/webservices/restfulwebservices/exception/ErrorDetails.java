@@ -3,22 +3,18 @@ package com.portfolioprojects.rest.webservices.restfulwebservices.exception;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
+//template for the customized exception response
 @AllArgsConstructor
 @Getter
-@Setter
+//@Component
+@NoArgsConstructor
 public class ErrorDetails {
-    /*
-     * timestamp
-     * errormessage
-     * details
-     * */
-    private LocalDateTime timestamp;
-    private String message;
-    private String details;
+    LocalDateTime timestamp;
+    String message;
+    String details;
 
 }

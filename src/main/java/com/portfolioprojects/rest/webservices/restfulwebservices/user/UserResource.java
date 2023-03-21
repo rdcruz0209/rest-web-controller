@@ -1,6 +1,6 @@
 package com.portfolioprojects.rest.webservices.restfulwebservices.user;
 
-import com.portfolioprojects.rest.webservices.restfulwebservices.exception.UserNotFoundException;
+import com.portfolioprojects.rest.webservices.restfulwebservices.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +27,14 @@ public class UserResource {
     public User retrieveUser(@PathVariable int id) {
         User user = userDAOService.findOne(id);
         if (user == null) {
-            throw new UserNotFoundException("id: " + id);
+//    @UserNotFoundException return status is defined using @ResponseStatus (code = HttpStatus.NOT_FOUND)
+            throw new UserNotFoundException("User not found with this id: " + id);
         }
         return user;
     }
 
+
+    //    ResponseEntity handles the response to be sent to the client including the path of the newly created User
     @PostMapping("users")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User savedUser = userDAOService.save(user);
