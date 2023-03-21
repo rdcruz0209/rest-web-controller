@@ -32,8 +32,6 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-
-        <!--        dependency for h2database-->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -45,24 +43,10 @@
             <scope>test</scope>
         </dependency>
 
-
-        <!--        dependency for lombok devtool-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-
-        <!--        dependency for API documentation - Open API-->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.0.0</version>
         </dependency>
     </dependencies>
 
