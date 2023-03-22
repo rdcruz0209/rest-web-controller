@@ -31,7 +31,6 @@ public class UserDAOService {
 
     public User findById(int id) {
         Predicate<? super User> predicate = user -> user.getId() == id;
-        System.out.println(predicate);
         return users.stream().filter(predicate).findFirst().orElse(null);
     }
 

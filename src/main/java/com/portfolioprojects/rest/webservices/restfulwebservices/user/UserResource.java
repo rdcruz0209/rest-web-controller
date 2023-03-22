@@ -1,8 +1,12 @@
 package com.portfolioprojects.rest.webservices.restfulwebservices.user;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 import com.portfolioprojects.rest.webservices.restfulwebservices.UserNotFoundException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -13,35 +17,43 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 public class UserResource {
+
     private final UserDAOService userDAOService;
 
     //automatically autowired using constructor - @AllArgsConstructor;
 
     //GET /users
     @GetMapping("/users")
-    public List<User> retrieveAllUser() {
+    public List<User> retrieveAllUsers() {
         return userDAOService.findAll();
     }
 
     //GET /users/{id}
+
+    //    HATEOAS
+//    EntityModel
+//    WebMvcLinkBuilder
     @GetMapping("/users/{id}")
-    public User retrieveUser(@PathVariable int id) {
+    public EntityModel<User> retrieveUser(@PathVariable int id) {
         User user = userDAOService.findById(id);
         if (user == null) {
 //    @UserNotFoundException return status is defined using @ResponseStatus (code = HttpStatus.NOT_FOUND)
             throw new UserNotFoundException("User not found with this id: " + id);
         }
-        return user;
+        EntityModel<User> entityModel = EntityModel.of(user);
+        WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).retrieveAllUsers());
+        entityModel.add(link.withRel("all-Users"));
+        return entityModel;
     }
 
     @DeleteMapping("/users/{id}")
-    public <T> void deleteUser(@PathVariable int id) {
+    public void deleteUser(@PathVariable int id) {
         userDAOService.deleteUserById(id);
     }
 
 
     //    ResponseEntity handles the response to be sent to the client including the path of the newly created User
-    @PostMapping("users")
+    @PostMapping("/users")
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         User savedUser = userDAOService.save(user);
 //        we dont want to hardcode the URI being returned so, we use {id}
@@ -50,7 +62,6 @@ public class UserResource {
                 .path("/{id}")
                 .buildAndExpand(savedUser.getId())
                 .toUri();
-
         return ResponseEntity.created(location).build();
     }
 
