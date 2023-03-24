@@ -1,5 +1,6 @@
-package com.portfolioprojects.rest.webservices.restfulwebservices.user;
+package com.portfolioprojects.rest.webservices.restfulwebservices.service;
 
+import com.portfolioprojects.rest.webservices.restfulwebservices.entity.user.User;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -10,13 +11,12 @@ import java.util.function.Predicate;
 @Component
 public class UserDAOService {
 
-//    JPA/Hibertnate -> Database
+    //    JPA/Hibertnate -> Database
 //    UserDAOService -> Static List then we'll convert this to database
 //    public List<User> findAll()
 //    public User save (User user)
 //    public User findAUser(int id)
-
-    private static List<User> users = new ArrayList<>();
+    private static final List<User> users = new ArrayList<>();
     private static int userCount = 0;
 
     static {

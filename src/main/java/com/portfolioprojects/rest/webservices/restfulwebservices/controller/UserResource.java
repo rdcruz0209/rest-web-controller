@@ -1,8 +1,10 @@
-package com.portfolioprojects.rest.webservices.restfulwebservices.user;
+package com.portfolioprojects.rest.webservices.restfulwebservices.controller;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
-import com.portfolioprojects.rest.webservices.restfulwebservices.UserNotFoundException;
+import com.portfolioprojects.rest.webservices.restfulwebservices.exception.UserNotFoundException;
+import com.portfolioprojects.rest.webservices.restfulwebservices.entity.user.User;
+import com.portfolioprojects.rest.webservices.restfulwebservices.service.UserDAOService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.EntityModel;
@@ -42,6 +44,7 @@ public class UserResource {
         }
         EntityModel<User> entityModel = EntityModel.of(user);
         WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).retrieveAllUsers());
+        System.out.println(this);
         entityModel.add(link.withRel("all-Users"));
         return entityModel;
     }
@@ -50,7 +53,6 @@ public class UserResource {
     public void deleteUser(@PathVariable int id) {
         userDAOService.deleteUserById(id);
     }
-
 
     //    ResponseEntity handles the response to be sent to the client including the path of the newly created User
     @PostMapping("/users")
@@ -62,6 +64,7 @@ public class UserResource {
                 .path("/{id}")
                 .buildAndExpand(savedUser.getId())
                 .toUri();
+
         return ResponseEntity.created(location).build();
     }
 
