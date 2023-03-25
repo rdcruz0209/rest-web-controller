@@ -15,32 +15,41 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
-    //    @Autowired
+//    @Autowired
 //    ErrorDetails errorDetails;
+//    we can use the ErrorDetails bean to return the message so we are not creating a new instance of ErrorDetails when calling an exception.
 
     @ExceptionHandler(Exception.class)
-    public final ResponseEntity<ErrorDetails> handleAllException(Exception ex, WebRequest request) throws Exception {
+    public final ResponseEntity<ErrorDetails> handleAllExceptions(Exception ex, WebRequest request) throws Exception {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), "Exception occurred: " + ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public final ResponseEntity<ErrorDetails> handleUserNotFoundException(Exception ex, WebRequest request) throws Exception {
+    public final ResponseEntity<ErrorDetails> handleUserNotFoundException(Exception ex, WebRequest request) throws UserNotFoundException {
+
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), "Exception occurred: " + ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(PostNotFoundException.class)
+    public final ResponseEntity<ErrorDetails> handlePostNotFoundException(Exception ex, WebRequest request) throws PostNotFoundException {
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), "Exception occurred: " + ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    //handles validation errors from jakarra validations
+//    overrides the handleMethodArgumentNotValid method in ResponseEntityExceptionHandler
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        String message = "";
+        String message = "Exception Occurred: ";
         int iCounter = 0;
         for (FieldError fe : ex.getFieldErrors()) {
             iCounter++;
-            fe.getDefaultMessage();
             message = message.concat(iCounter + ": ").concat(fe.getDefaultMessage() + " ");
         }
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), message, request.getDescription(false));
-        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
 

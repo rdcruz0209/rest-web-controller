@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.ToString;
+import org.hibernate.grammars.hql.HqlParser;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -43,8 +44,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
-    @JsonIgnore
-    @OneToOne
+
     public int getId() {
         return id;
     }
@@ -79,6 +79,7 @@ public class User {
             throw new PostNotFoundException("Post Not Found with this id " + id);
         }
         return postToGet.get();
+
     }
 
 }

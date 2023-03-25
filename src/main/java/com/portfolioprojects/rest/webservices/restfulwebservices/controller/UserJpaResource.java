@@ -1,10 +1,10 @@
 package com.portfolioprojects.rest.webservices.restfulwebservices.controller;
 
 import com.portfolioprojects.rest.webservices.restfulwebservices.entity.user.Post;
+import com.portfolioprojects.rest.webservices.restfulwebservices.entity.user.User;
 import com.portfolioprojects.rest.webservices.restfulwebservices.exception.UserNotFoundException;
 import com.portfolioprojects.rest.webservices.restfulwebservices.repository.PostRepository;
 import com.portfolioprojects.rest.webservices.restfulwebservices.repository.UserRepository;
-import com.portfolioprojects.rest.webservices.restfulwebservices.entity.user.User;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.EntityModel;
@@ -17,8 +17,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @AllArgsConstructor
@@ -46,28 +45,17 @@ public class UserJpaResource {
             throw new UserNotFoundException("User not found with this id: " + id);
         }
         EntityModel<User> entityModel = EntityModel.of(user.get());
-        WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).retrieveAllUsers());
-//        System.out.println(this);
-        entityModel.add(link.withRel("all-Users"));
+        WebMvcLinkBuilder linkToAllUser = linkTo(methodOn(UserJpaResource.class).retrieveAllUsers());
+        entityModel.add(linkToAllUser.withRel("all-Users")); //provides the relationship description of the linkToAllUser;
+
+        //check if not empty. if empty, then don't add the link to all posts
+        if (!retrievePostsForUser(id).isEmpty()) {
+            WebMvcLinkBuilder linkToPost = linkTo(methodOn(UserJpaResource.class).retrievePostsForUser(id));
+            entityModel.add(linkToPost.withRel("all-Posts"));
+        }
         return entityModel;
     }
 
-    @DeleteMapping("/jpa/users/{id}")
-    public void deleteUser(@PathVariable int id) {
-        Optional<User> userToDelete = userRepository.findById(id);
-        if (userToDelete.isEmpty()) {
-            throw new UserNotFoundException("User not found with this id: " + id);
-        }
-        userRepository.deleteById(id);
-        // to return a location of all users endpoint uncomment below and change the return type of this method to ResponseEntity<User>
-//        URI location = ServletUriComponentsBuilder.fromUriString("http://localhost:8080/jpa")
-//                .path("/{id}")
-//                .buildAndExpand("users")
-//                .toUri();
-//        return ResponseEntity.created(location).build();
-    }
-
-    //    ResponseEntity handles the response to be sent to the client including the path of the newly created User
     @PostMapping("/jpa/users")
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         User savedUser = userRepository.save(user);
@@ -80,13 +68,33 @@ public class UserJpaResource {
         return ResponseEntity.created(location).build();
     }
 
+    @PostMapping("/jpa/entity/users")
+    public EntityModel<User> createUserEntityModel(@Valid @RequestBody User user) {
+        userRepository.save(user);
+        EntityModel<User> entityModel = EntityModel.of(user);
+        WebMvcLinkBuilder link = linkTo(methodOn(UserJpaResource.class).retrieveUser(user.getId()));
+        entityModel.add(link.withRel("link to user")); //provides the relationship description of the link;
+        return entityModel;
+    }
+
+    @DeleteMapping("/jpa/users/{id}")
+    public void deleteUser(@PathVariable int id) {
+        Optional<User> userToDelete = userRepository.findById(id);
+        if (userToDelete.isEmpty()) {
+            throw new UserNotFoundException("User not found with this id: " + id);
+        }
+        userRepository.deleteById(id);
+    }
+
+    //    ResponseEntity handles the response to be sent to the client including the path of the newly created User
+
+
     @GetMapping("/jpa/users/{id}/posts")
     public List<Post> retrievePostsForUser(@PathVariable int id) {
         Optional<User> userToRetrievePost = userRepository.findById(id);
         if (userToRetrievePost.isEmpty()) {
             throw new UserNotFoundException("User Not Found with this ID");
         }
-
         return userToRetrievePost.get().getPosts();
     }
 
