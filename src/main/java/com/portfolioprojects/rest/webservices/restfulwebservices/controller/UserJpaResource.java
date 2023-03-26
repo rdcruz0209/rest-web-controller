@@ -17,7 +17,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @AllArgsConstructor
@@ -44,7 +45,7 @@ public class UserJpaResource {
             //    @UserNotFoundException return status is defined using @ResponseStatus (code = HttpStatus.NOT_FOUND)
             throw new UserNotFoundException("User not found with this id: " + id);
         }
-        EntityModel<User> entityModel = EntityModel.of(user.get());
+        EntityModel<User> entityModel = of(user.get());
         WebMvcLinkBuilder linkToAllUser = linkTo(methodOn(UserJpaResource.class).retrieveAllUsers());
         entityModel.add(linkToAllUser.withRel("all-Users")); //provides the relationship description of the linkToAllUser;
 
