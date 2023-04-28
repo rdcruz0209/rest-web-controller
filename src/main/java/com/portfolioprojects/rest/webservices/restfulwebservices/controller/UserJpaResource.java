@@ -34,7 +34,6 @@ public class UserJpaResource {
     }
 
     //GET /users/{id}
-
     //    HATEOAS
 //    EntityModel
 //    WebMvcLinkBuilder
@@ -45,7 +44,7 @@ public class UserJpaResource {
             //    @UserNotFoundException return status is defined using @ResponseStatus (code = HttpStatus.NOT_FOUND)
             throw new UserNotFoundException("User not found with this id: " + id);
         }
-        EntityModel<User> entityModel = of(user.get());
+        EntityModel<User> entityModel = EntityModel.of(user.get());
         WebMvcLinkBuilder linkToAllUser = linkTo(methodOn(UserJpaResource.class).retrieveAllUsers());
         entityModel.add(linkToAllUser.withRel("all-Users")); //provides the relationship description of the linkToAllUser;
 

@@ -14,6 +14,8 @@ import java.util.List;
 @RestController
 public class FilteringController {
 
+    //filter the objects that should be returned as response. More customizable compared to @JsonIgnore
+
     @GetMapping("/filtering")
     public MappingJacksonValue filtering() {
         SomeBean someBean = new SomeBean("value1", "value2", "value3");

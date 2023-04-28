@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.ToString;
-import org.hibernate.grammars.hql.HqlParser;
 
 import java.time.LocalDate;
 import java.util.List;
