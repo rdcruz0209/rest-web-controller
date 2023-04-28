@@ -10,7 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 public class Post {
 
     @Id
@@ -24,4 +23,13 @@ public class Post {
 
     @Size(min = 10, message = "Please input a post with at least 5 characters")
     private String description;
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", user=" + user +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
